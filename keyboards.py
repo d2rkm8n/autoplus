@@ -9,3 +9,11 @@ request_a_call = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton('�
                                                                               request_contact=True))
 
 
+ikb_vin_number = InlineKeyboardMarkup(row_width=2)
+key_send_vin = InlineKeyboardButton('Отправить VIN-номер', callback_data='order_vin')
+key_cancel = InlineKeyboardButton('Пропустить', callback_data='order_cancel')
+ikb_vin_number.add(key_send_vin, key_cancel)
+
+ikb_take_order = InlineKeyboardMarkup(row_width=1)
+key_send_back_order = InlineKeyboardButton('Ответить на заказ', callback_data='sendback_order')
+ikb_take_order.add(key_send_back_order)
