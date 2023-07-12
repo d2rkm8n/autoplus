@@ -1,9 +1,11 @@
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-import config, support
+import config
+import support
 from aiogram import Bot, Dispatcher, executor, types
-from keyboards import ikb_nearest_service, request_a_call, ikb_vin_number, ikb_take_order, key_cancel, ikb_take_order_from_photo
+from keyboards import ikb_nearest_service, request_a_call, ikb_vin_number, ikb_take_order, key_cancel, \
+    ikb_take_order_from_photo
 from db import Database
 from FSM import DoOrder, SendBackMessage, DoOrderFromVin, CarRepair, DoOrderFromTechPassport
 from datetime import datetime
@@ -59,7 +61,7 @@ async def send_to_all_users(message: types.Message):
                     await bot.send_message(user[0], text)
                     if int(user[1]) != 1:
                         db.set_active(user[0], 1)
-                except:
+                except():
                     db.set_active(user[0], 0)
 
             await bot.send_message(message.from_user.id, 'Рассылка произошла успешно!')
@@ -90,18 +92,15 @@ async def send_nearest_service(message: types.Message):
 
 @dp.callback_query_handler(lambda callback: callback.data.startswith('nearest'))
 async def callback_access(callback: types.CallbackQuery):
-    #sticker = open('stickers/st_wait_you.webp', 'rb')
     if callback.data == 'nearest_Mozyr':
         await bot.send_location(callback.message.chat.id, latitude=52.047454, longitude=29.255804)
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id,
                                     text='Адрес: улица Пушкина 44а, телефон: МТС/А1 6643939', reply_markup=None)
-        #await bot.send_sticker(callback.message.chat.id, sticker)
 
     if callback.data == 'nearest_Kalinkovichi':
         await bot.send_location(callback.message.chat.id, latitude=52.132859, longitude=29.329223)
         await bot.edit_message_text(chat_id=callback.message.chat.id, message_id=callback.message.message_id,
                                     text='Адрес: Первомайская 42, телефон: МТС/А1 6643939', reply_markup=None)
-        #await bot.send_sticker(callback.message.chat.id, sticker)
 
 
 @dp.message_handler(commands=['request_a_call'])
@@ -147,7 +146,8 @@ async def load_car_year(message: types.Message, state: FSMContext):
     await DoOrder.next()
 
 
-@dp.message_handler(lambda message: not message.text.isdigit() or int(message.text) not in range(1980, datetime.now().year + 1),
+@dp.message_handler(lambda message: not message.text.isdigit() or
+                                    int(message.text) not in range(1980, datetime.now().year + 1),
                     state=DoOrder.car_year)
 async def check_digits(message: types.Message):
     await message.reply('Введите более правдоподобную дату')
@@ -311,7 +311,7 @@ async def unknown_message(message: types.Message):
     if message.chat.type == 'private':
         stic_ti_cho = open('stickers/sticker1.webp', 'rb')
 
-        await bot.send_message(config.ADMIN, message)
+        #await bot.send_message(config.ADMIN, message)
         await bot.send_sticker(message.chat.id, stic_ti_cho)
         await bot.send_message(message.chat.id, 'Извините, я не понимаю Вас пока-что, но обязательно научусь.')
         await message.delete()
