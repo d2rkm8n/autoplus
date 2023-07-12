@@ -43,7 +43,8 @@ async def get_phone_number(message: types.Message):
         await bot.send_sticker(message.chat.id, sticker)
         await bot.send_message(message.chat.id, 'Спасибо, наш менеджер скоро свяжется с Вами!')
         for admin in config.ADMINS:
-            await bot.send_message(admin, f'Пользователь {message.from_user.full_name} '
+            await bot.send_message(admin, f'📎 НОВЫЙ ЗАПРОС!\n\n'
+                                          f'Пользователь {message.from_user.full_name} '
                                           f'оставил запрос на обратный звонок\n'
                                           f'+{message.contact.phone_number}', reply_markup=ReplyKeyboardRemove())
 
@@ -294,6 +295,10 @@ async def repair_cost(message: types.Message):
 async def car_info(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['инфо'] = message.text
+    stic = open('stickers/st_ill_call_you.webp', 'rb')
+    await bot.send_sticker(message.chat.id, stic)
+    await bot.send_message(message.chat.id, 'Спасибо, Ваш заказ принят, наш менеджер скоро свяжется с Вами!',
+                           reply_markup=ReplyKeyboardRemove())
     user_info = f'\nПользователь: {message.from_user.first_name}, ID: {message.from_user.id}'
     for admin in config.ADMINS:
         await bot.send_message(admin, f"📝 НОВЫЙ ЗАКАЗ - УЗНАТЬ СТОИМОСТЬ РЕМОНТА!\n\n" + data['инфо'] + user_info,
