@@ -12,10 +12,22 @@ class DoOrder(StatesGroup):
 
 class DoOrderFromVin(StatesGroup):
 
+    car_vin_number = State()
     car_part_vin = State()
 
+
+class DoOrderFromTechPassport(StatesGroup):
+
+    car_tech_passport = State()
+    car_part = State()
 
 
 class SendBackMessage(StatesGroup):
 
+    user_id = State()
     back_message = State()
+
+
+class CarRepair(StatesGroup):
+
+    info = State()
